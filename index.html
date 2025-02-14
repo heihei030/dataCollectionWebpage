@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Monitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1001.0.min.js"></script>
+    <script src="https://amazon-cognito-identity-js-builds.s3.amazonaws.com/amazon-cognito-identity.min.js"></script>
+</head>
+<body>
+    <div id="login-section" class="container mt-5">
+        <h2>Login</h2>
+        <form id="login-form">
+            <div class="mb-3">
+                <input type="email" class="form-control" id="email" placeholder="Email" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="button" class="btn btn-secondary" onclick="showSignup()">Sign Up</button>
+        </form>
+    </div>
+
+    <div id="signup-section" class="container mt-5 d-none">
+        <h2>Sign Up</h2>
+        <form id="signup-form">
+            <div class="mb-3">
+                <input type="email" class="form-control" id="signup-email" placeholder="Email" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" id="signup-password" placeholder="Password" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" id="confirm-password" placeholder="Confirm Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+            <button type="button" class="btn btn-secondary" onclick="showLogin()">Back to Login</button>
+        </form>
+    </div>
+
+    <div id="dashboard" class="container mt-5 d-none">
+        <h1>Environmental Dashboard</h1>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Rain</h5>
+                        <h2 id="rain-value">--</h2>
+                        <p>mm/hour</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Solar Intensity</h5>
+                        <h2 id="solar-value">--</h2>
+                        <p>W/m²</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Soil Humidity</h5>
+                        <h2 id="humidity-value">--</h2>
+                        <p>%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <canvas id="historyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

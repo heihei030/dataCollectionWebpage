@@ -1,0 +1,74 @@
+To estimate the monthly pricing for your AWS services based on your requirements (recording every 5 minutes and real-time website updates), we’ll break down the costs for each relevant AWS service.
+
+### 1. **AWS IoT Core**
+- **Estimated Messages**: 
+  - 1 message every 5 minutes = 12 messages per hour = 288 messages per day.
+  - For 30 days: 288 messages/day × 30 days = **8,640 messages**.
+- **Pricing**: 
+  - First 250,000 messages per month are free; after that, it's $1.00 per 1,000 messages.
+  - In this case, you would fall under the free tier.
+- **Cost**: **$0**
+
+### 2. **AWS Lambda**
+- **Estimated Invocations**:
+  - Assuming 1 Lambda invocation per message sent (i.e., every 5 minutes).
+  - Total invocations per month = **8,640**.
+- **Pricing**:
+  - The first 1 million requests per month are free.
+- **Cost**: **$0**
+
+### 3. **Amazon DynamoDB**
+- **Estimated Writes**:
+  - Each data record from the Raspberry Pi would typically be a single write.
+  - Total writes per month = **8,640**.
+- **Pricing**:
+  - The first 25 GB of storage is free, and the first 25 write capacity units (WCU) per month are free.
+  - Assuming each write is 1 KB, you will still be within the free tier.
+- **Cost**: **$0**
+
+### 4. **Amazon API Gateway**
+- **Estimated API Calls**:
+  - Assuming each website update requires an API call for the latest data every 5 minutes.
+  - Total calls per month = 8,640 (for the backend) + real-time updates = 8,640 (for the frontend) = **17,280**.
+- **Pricing**:
+  - First 1 million API calls are free.
+- **Cost**: **$0**
+
+### 5. **AWS Amplify**
+- **Estimated Usage**:
+  - Hosting a simple website with low traffic (assume 10 GB of data transfer and 1 million requests).
+- **Pricing**:
+  - Free tier includes 1,000 build minutes per month and 5 GB of storage.
+  - Pay $0.023/GB for data transfer out.
+  - Assuming you use 10 GB of data transfer: 10 GB x $0.023 = **$0.23**.
+- **Cost**: **$0.23**
+
+### 6. **Amazon S3 (if used)**
+- If you're using S3 for static files:
+  - Assume 5 GB of storage and 10 GB of data transfer.
+  - Pricing: $0.023 per GB for storage.
+  - Cost for storage: 5 GB x $0.023 = **$0.115**.
+  - Cost for data transfer: 10 GB x $0.09 = **$0.90**.
+- **Total S3 Cost**: **$1.015** (if applicable)
+
+### 7. **Amazon CloudWatch**
+- Assuming basic monitoring is within the free tier, but if you enable detailed monitoring:
+  - Pricing: $0.30 per metric per month.
+  - Assuming you monitor 5 metrics: 5 x $0.30 = **$1.50**.
+- **Cost**: **$1.50** (if detailed monitoring is used)
+
+### **Total Estimated Monthly Cost**
+- **AWS IoT Core**: $0
+- **AWS Lambda**: $0
+- **Amazon DynamoDB**: $0
+- **Amazon API Gateway**: $0
+- **AWS Amplify**: $0.23
+- **Amazon S3 (if used)**: $1.015
+- **Amazon CloudWatch**: $1.50
+
+### **Grand Total**
+- **If using S3 and CloudWatch**: **$2.745**
+- **If not using S3 and only using Amplify and CloudWatch**: **$1.73**
+
+### Conclusion
+Your estimated monthly AWS cost, based on the information provided, would be approximately **$1.73** to **$2.745**, depending on your usage of S3. All other services would remain free under the specified usage limits.
