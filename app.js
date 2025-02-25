@@ -3,15 +3,41 @@ let chart;
 async function fetchData() {
     const token = localStorage.getItem('token');
     try {
-        const response = await fetch('YOUR_API_GATEWAY_URL/data', {
-            headers: {
-                'Authorization': token
-            }
+        console.log('Making request with token:', {
+            exists: !!token,
+            length: token?.length
         });
-        return await response.json();
+        
+        const response = await fetch('https://gt6x80p5dg.execute-api.ap-northeast-1.amazonaws.com/environmental-monitor-data', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'text/plain',
+                'Origin': 'http://127.0.0.1:5500'
+            },
+            mode: 'cors'
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API Error:', {
+                status: response.status,
+                statusText: response.statusText,
+                error: errorText,
+                headers: Object.fromEntries(response.headers)
+            });
+            throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('API Response:', data);
+        return data;
     } catch (error) {
-        console.error('Error fetching data:', error);
-        return null;
+        console.error('Fetch error:', error);
+        return {
+            current: { rain: 0, solar: 0, humidity: 0 },
+            history: { timestamps: [], rain: [], solar: [], humidity: [] }
+        };
     }
 }
 
