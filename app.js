@@ -12,10 +12,8 @@ async function fetchData() {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'text/plain',
-                'Origin': 'http://127.0.0.1:5500'
-            },
-            mode: 'cors'
+                'Origin': 'https://main.domb5n1x3mktv.amplifyapp.com'
+            }
         });
         
         if (!response.ok) {
