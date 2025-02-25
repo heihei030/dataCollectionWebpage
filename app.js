@@ -48,7 +48,7 @@ function updateDashboard(data) {
     document.getElementById('solar-value').textContent = data.current.solar.toFixed(0);
     document.getElementById('humidity-value').textContent = data.current.humidity.toFixed(1);
 
-    updateChart(data.history);
+    //updateChart(data.history);
 }
 
 function updateChart(historyData) {
