@@ -23,8 +23,7 @@ async function fetchData() {
             console.error('API Error:', {
                 status: response.status,
                 statusText: response.statusText,
-                error: errorText,
-                headers: Object.fromEntries(response.headers)
+                error: errorText
             });
             throw new Error(`API error: ${response.status}`);
         }
@@ -35,8 +34,7 @@ async function fetchData() {
     } catch (error) {
         console.error('Fetch error:', error);
         return {
-            current: { rain: 0, solar: 0, humidity: 0 },
-            history: { timestamps: [], rain: [], solar: [], humidity: [] }
+            current: { rain: 0, solar: 0, humidity: 0 }
         };
     }
 }
@@ -47,54 +45,6 @@ function updateDashboard(data) {
     document.getElementById('rain-value').textContent = data.current.rain.toFixed(1);
     document.getElementById('solar-value').textContent = data.current.solar.toFixed(0);
     document.getElementById('humidity-value').textContent = data.current.humidity.toFixed(1);
-
-    //updateChart(data.history);
-}
-
-function updateChart(historyData) {
-    if (chart) {
-        chart.destroy();
-    }
-
-    const ctx = document.getElementById('historyChart').getContext('2d');
-    chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: historyData.timestamps,
-            datasets: [
-                {
-                    label: 'Rain',
-                    data: historyData.rain,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    tension: 0.4
-                },
-                {
-                    label: 'Solar Intensity',
-                    data: historyData.solar,
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    tension: 0.4
-                },
-                {
-                    label: 'Soil Humidity',
-                    data: historyData.humidity,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    tension: 0.4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
 }
 
 async function initDashboard() {
