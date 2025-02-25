@@ -1,40 +1,108 @@
 let chart;
+let currentSensorId = null;
+let currentTimeRange = 'day';
 
-async function fetchData() {
+async function fetchSensors() {
     const token = localStorage.getItem('token');
     try {
-        console.log('Making request with token:', {
-            exists: !!token,
-            length: token?.length
-        });
-        
-        const response = await fetch('https://gt6x80p5dg.execute-api.ap-northeast-1.amazonaws.com/environmental-monitor-data', {
-            method: 'GET',
+        const response = await fetch('https://gt6x80p5dg.execute-api.ap-northeast-1.amazonaws.com/sensors', {
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Origin': 'https://main.domb5n1x3mktv.amplifyapp.com'
+                'Authorization': `Bearer ${token}`
             }
         });
         
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('API Error:', {
-                status: response.status,
-                statusText: response.statusText,
-                error: errorText
-            });
-            throw new Error(`API error: ${response.status}`);
+        if (!response.ok) throw new Error('Failed to fetch sensors');
+        
+        const sensors = await response.json();
+        const sensorSelect = document.getElementById('sensorSelect');
+        sensorSelect.innerHTML = sensors.map(sensor => 
+            `<option value="${sensor.id}">Sensor ${sensor.id} - ${sensor.location}</option>`
+        ).join('');
+        
+        // Select first sensor by default
+        if (sensors.length > 0) {
+            currentSensorId = sensors[0].id;
+            await fetchData();
         }
+    } catch (error) {
+        console.error('Error fetching sensors:', error);
+    }
+}
+
+async function fetchData() {
+    if (!currentSensorId) return;
+    
+    const token = localStorage.getItem('token');
+    try {
+        const response = await fetch(`https://gt6x80p5dg.execute-api.ap-northeast-1.amazonaws.com/environmental-monitor-data/${currentSensorId}?timeRange=${currentTimeRange}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch data');
         
         const data = await response.json();
-        console.log('API Response:', data);
-        return data;
+        updateDashboard(data);
+        updateChart(data.history);
     } catch (error) {
         console.error('Fetch error:', error);
-        return {
-            current: { rain: 0, solar: 0, humidity: 0 }
-        };
     }
+}
+
+function updateChart(historyData) {
+    const ctx = document.getElementById('historyChart').getContext('2d');
+    
+    if (chart) {
+        chart.destroy();
+    }
+    
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: historyData.timestamps,
+            datasets: [
+                {
+                    label: 'Rain',
+                    data: historyData.rain,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    tension: 0.4
+                },
+                {
+                    label: 'Solar Intensity',
+                    data: historyData.solar,
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    tension: 0.4
+                },
+                {
+                    label: 'Soil Humidity',
+                    data: historyData.humidity,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: currentTimeRange === 'day' ? 'hour' : 
+                              currentTimeRange === 'week' ? 'day' : 
+                              currentTimeRange === 'month' ? 'week' : 'month'
+                    }
+                }
+            }
+        }
+    });
 }
 
 function updateDashboard(data) {
@@ -46,14 +114,21 @@ function updateDashboard(data) {
 }
 
 async function initDashboard() {
-    const data = await fetchData();
-    updateDashboard(data);
+    await fetchSensors();
+    
+    // Add event listeners
+    document.getElementById('sensorSelect').addEventListener('change', (e) => {
+        currentSensorId = e.target.value;
+        fetchData();
+    });
+    
+    document.getElementById('timeRange').addEventListener('change', (e) => {
+        currentTimeRange = e.target.value;
+        fetchData();
+    });
     
     // Update every 5 minutes
-    setInterval(async () => {
-        const newData = await fetchData();
-        updateDashboard(newData);
-    }, 5 * 60 * 1000);
+    setInterval(fetchData, 5 * 60 * 1000);
 }
 
 // Check if user is already logged in

@@ -85,8 +85,35 @@
         </div>
         
         <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="sensorSelect">Select Sensor</label>
+                    <select class="form-control" id="sensorSelect">
+                        <option value="">Loading sensors...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="timeRange">Time Range</label>
+                    <select class="form-control" id="timeRange">
+                        <option value="day">Last 24 Hours</option>
+                        <option value="week">Last Week</option>
+                        <option value="month">Last Month</option>
+                        <option value="year">Last Year</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
             <div class="col-12">
-                <canvas id="historyChart"></canvas>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Historical Data</h5>
+                        <canvas id="historyChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

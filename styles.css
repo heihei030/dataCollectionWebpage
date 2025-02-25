@@ -41,4 +41,24 @@
 #signup-section {
     max-width: 400px;
     margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.5rem;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
 } 
